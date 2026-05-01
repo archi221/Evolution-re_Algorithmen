@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.function.ToDoubleFunction;
@@ -13,10 +12,8 @@ public class HillClimbingAlgo {
     public int dimension;
     public ToDoubleFunction<double[]> fitnessFunction;
 
-
     public HillClimbingAlgo(ToDoubleFunction<double[]> fitnessFunction,
-                            double min, double max, int populationSize, int dimension,
-                            int seed) {
+                            double min, double max, int dimension, int seed) {
         random.setSeed(seed);
         this.fitnessFunction = fitnessFunction;
         this.dimension = dimension;
@@ -30,6 +27,16 @@ public class HillClimbingAlgo {
 //            }
 //            population.add(vector);
 //        }
+    }
+
+    public HillClimbingAlgo(ToDoubleFunction<double[]> fitnessFunction,
+                            double min, double max, int dimension) {
+        random.setSeed(420);
+        this.fitnessFunction = fitnessFunction;
+        this.dimension = dimension;
+        this.min = min;
+        this.max = max;
+        assert max > min;
     }
 
     public double[] Optimize(int maxIterations, double steps_range) {
