@@ -48,6 +48,8 @@ public class HillClimbingAlgo {
                 step = random.nextDouble((-steps_range), steps_range);
 
                 vector[k] += step;
+                if (vector[k] < min) vector[k] = min;
+                if (vector[k] > max) vector[k] = max;
                 population.add(vector);
             }
             double[] updatedBestVector = population.stream()
