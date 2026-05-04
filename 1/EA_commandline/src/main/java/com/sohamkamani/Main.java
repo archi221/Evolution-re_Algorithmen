@@ -24,9 +24,9 @@ public class Main {
         }
         GenetischerAlgorithmus sphere = new GenetischerAlgorithmus(functions::SphereFunktion, -5.12, 5.12, 10);
         GenetischerAlgorithmus acley = new GenetischerAlgorithmus(functions::AcleyFunktion, -5.12, 5.12, 2);
-        System.out.println("Sphere Funktion ");
+        System.out.print("Sphere Funktion ");
         sphere.optimize();
-        System.out.println("Acley Funktion ");
+        System.out.print("Acley Funktion ");
         acley.optimize();
     }
 }

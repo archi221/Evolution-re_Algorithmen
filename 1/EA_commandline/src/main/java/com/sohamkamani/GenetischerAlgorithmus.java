@@ -57,7 +57,7 @@ public class GenetischerAlgorithmus {
         Engine<DoubleGene, Double> engine = Engine
                 .builder(this::eval, gtf)
                 .optimize(Optimize.MINIMUM)
-                .populationSize(100)
+                .populationSize(40)
                 .alterers(
                         new Mutator<>(0.03),
                         new MeanAlterer<>(0.6)
@@ -67,7 +67,7 @@ public class GenetischerAlgorithmus {
         // 3.) Evolution starten und Ergebnis sammeln
         Genotype<DoubleGene> result = engine.stream()
                 .limit(bySteadyFitness(5))
-                .limit(100)
+                .limit(20)
                 .collect(EvolutionResult. toBestGenotype());
 
         System.out.println("GA:\n" + result);
