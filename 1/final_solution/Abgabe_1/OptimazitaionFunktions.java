@@ -1,8 +1,8 @@
-package org.example;
+import java.util.ArrayList;
 
 public class OptimazitaionFunktions {
 
-    public double SphereFunktion(double[] vector){
+    public double SphereFunktion(ArrayList<Double> vector){
         double summe = 0;
         final double valueRange = 5.12;
         for (double v : vector) {
@@ -11,12 +11,12 @@ public class OptimazitaionFunktions {
         }
         return summe;
     }
-    public double AcleyFunktion(double[] vector){
+    public double AcleyFunktion(ArrayList<Double> vector){
         double firstSum = 0;
         double secondSum = 0;
         for (double v : vector) {
-           firstSum += (Math.pow(v, 2) / vector.length);
-           secondSum += (Math.cos(2 * Math.PI * v) / vector.length);
+           firstSum += (Math.pow(v, 2) / vector.size());
+           secondSum += (Math.cos(2 * Math.PI * v) / vector.size());
         }
         double firstExp = Math.exp(- 0.2 * firstSum);
         double secondExp = Math.exp(secondSum);

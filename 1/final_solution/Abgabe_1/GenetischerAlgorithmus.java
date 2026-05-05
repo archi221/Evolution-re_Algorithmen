@@ -1,5 +1,3 @@
-package com.sohamkamani;
-
 import io.jenetics.*;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
@@ -9,11 +7,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
+
+import static io.jenetics.engine.Limits.bySteadyFitness;
 
 public class GenetischerAlgorithmus {
 
@@ -51,11 +48,7 @@ public class GenetischerAlgorithmus {
         return fitnessFunction.applyAsDouble(values);
     }
 
-    public Genotype<DoubleGene> optimize() {
-        return optimize("optimizationData.txt");
-    }
-
-    public Genotype<DoubleGene> optimize(String path) {
+    public Genotype<DoubleGene> optimize(String path, int populationSize, double mutationProbability, int maxGenerations) {
         // 1.) Genotyp definieren
         Factory<Genotype<DoubleGene>> gtf =
                 Genotype.of(DoubleChromosome.of(min, max, dimension));
@@ -63,25 +56,27 @@ public class GenetischerAlgorithmus {
         // 2.) Engine erstellen
         Engine<DoubleGene, Double> engine = Engine
                 .builder(this::eval, gtf)
-                .optimize(Optimize.MINIMUM)
-                .populationSize(40)
+                .populationSize(populationSize)
                 .alterers(
-                        new Mutator<>(0.1),
+                        new Mutator<>(mutationProbability),
                         new MeanAlterer<>(0.6)
                 )
+                .minimizing()
                 .build();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Total Generations, Worst Fitness, Best Fitness, Median Fitness, Mean Fitness, Kill Count\n");
+        Genotype<DoubleGene> result = null;
+        try (BufferedWriter writer =
+                     new BufferedWriter(new FileWriter(path))) {
+
+            writer.write("Total Generations, Worst Fitness, Best Fitness, Median Fitness, Mean Fitness\n");
 
         // 3.) Evolution starten und Ergebnis sammeln
-        Genotype<DoubleGene> result = engine.stream()
+        result = engine.stream()
 
-                //.limit(bySteadyFitness(10))
-                .limit(100)
+                .limit(bySteadyFitness(20))
+                .limit(maxGenerations)
                 .peek(x -> {
-                    List<Phenotype<DoubleGene, Double>> genotypes = x.population().stream().toList();
-                    double[] fitnessValues = genotypes.stream()
+                    double[] fitnessValues = x.population().stream()
                             .mapToDouble(Phenotype::fitness)
                             .toArray();
                     double mean = Arrays.stream(fitnessValues).average().orElse(0.0);
@@ -94,24 +89,21 @@ public class GenetischerAlgorithmus {
                         median = median + fitnessValuesSortet[fitnessValuesSortet.length / 2 - 1];
                         median = median / 2;
                         }
-                    sb.append(x.totalGenerations()).append(",");
-                    sb.append(x.worstFitness()).append(",");
-                    sb.append(x.bestFitness()).append(",");
-                    sb.append(median);
-                    sb.append(",");
-                    sb.append(mean);
-                    sb.append(",");
-                    sb.append(x.killCount()).append("\n");
+                    try {
+                        writer.write(x.totalGenerations() + ",");
+                        writer.write(x.worstFitness() + ",");
+                        writer.write(x.bestFitness() + ",");
+                        writer.write(median + ",");
+                        writer.write(mean + "\n");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 })
                 .collect(EvolutionResult. toBestGenotype());
 
-        String evolutionData = sb.toString();
-        try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
-            out.write(evolutionData);
-            out.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Fehler beim Schreiben der CSV", e);
         }
         return result;
     }
