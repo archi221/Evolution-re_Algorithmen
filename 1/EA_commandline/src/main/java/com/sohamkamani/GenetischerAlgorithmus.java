@@ -3,11 +3,13 @@ package com.sohamkamani;
 import io.jenetics.*;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
-import io.jenetics.engine.EvolutionStart;
 import io.jenetics.util.Factory;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
@@ -48,7 +50,11 @@ public class GenetischerAlgorithmus {
         return fitnessFunction.applyAsDouble(values);
     }
 
-    public void optimize() {
+    public Genotype<DoubleGene> optimize() {
+        return optimize("optimizationData.txt");
+    }
+
+    public Genotype<DoubleGene> optimize(String path) {
         // 1.) Genotyp definieren
         Factory<Genotype<DoubleGene>> gtf =
                 Genotype.of(DoubleChromosome.of(min, max, dimension));
@@ -59,17 +65,55 @@ public class GenetischerAlgorithmus {
                 .optimize(Optimize.MINIMUM)
                 .populationSize(40)
                 .alterers(
-                        new Mutator<>(0.03),
+                        new Mutator<>(0.1),
                         new MeanAlterer<>(0.6)
                 )
                 .build();
 
+        List<String> generationData = Collections.synchronizedList(new ArrayList<>());
+        StringBuilder sb = new StringBuilder();
+        sb.append("Total Generations, Worst Fitness, Best Fitness, Median Fitness, Mean Fitness, Kill Count\n");
+
         // 3.) Evolution starten und Ergebnis sammeln
         Genotype<DoubleGene> result = engine.stream()
-                .limit(bySteadyFitness(5))
-                .limit(20)
+
+                //.limit(bySteadyFitness(10))
+                .limit(100)
+                .peek(x -> {
+                    List<Phenotype<DoubleGene, Double>> genotypes = x.population().stream().toList();
+                    double[] fitnessValues = genotypes.stream()
+                            .mapToDouble(Phenotype::fitness)
+                            .toArray();
+                    double mean = Arrays.stream(fitnessValues).average().orElse(0.0);
+                    double[] fitnessValuesSortet = Arrays.stream(fitnessValues).sorted().toArray();
+                    double median;
+                    if (fitnessValuesSortet.length % 2 == 0) {
+                        median = fitnessValuesSortet[fitnessValuesSortet.length / 2];
+                    }else{
+                        median = fitnessValuesSortet[fitnessValuesSortet.length / 2 + 1];
+                        median = median + fitnessValuesSortet[fitnessValuesSortet.length / 2 - 1];
+                        median = median / 2;
+                        }
+                    sb.append(x.totalGenerations()).append(",");
+                    sb.append(x.worstFitness()).append(",");
+                    sb.append(x.bestFitness()).append(",");
+                    sb.append(median);
+                    sb.append(",");
+                    sb.append(mean);
+                    sb.append(",");
+                    sb.append(x.killCount()).append("\n");
+                })
                 .collect(EvolutionResult. toBestGenotype());
 
-        System.out.println("GA:\n" + result);
+        String evolutionData = sb.toString();
+        try {
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+            out.write(evolutionData);
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
     }
 }

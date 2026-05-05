@@ -21,7 +21,8 @@ public class OptimazitaionFunktions {
            secondSum += (Math.cos(2 * Math.PI * v) / vector.size());
         }
         double firstExp = Math.exp(- 0.2 * firstSum);
-        double secondExp = Math.exp(secondSum);
+        double secondExp
+                = Math.exp(secondSum);
         return 20 + Math.E - (20 * firstExp) - secondExp;
     }
 }
