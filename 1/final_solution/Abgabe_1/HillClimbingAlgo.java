@@ -57,10 +57,11 @@ public class HillClimbingAlgo {
                     .orElseThrow(() -> new IllegalStateException("Population ist leer"));
 
             if (fitnessFunction.applyAsDouble(updatedBestVector) < fitnessFunction.applyAsDouble(bestVector)) {
-                bestVector = updatedBestVector;
-            } else {
-                break;
+                bestVector = new ArrayList<>(updatedBestVector);
             }
+//            } else {
+//                break;
+//            }
         }
         return bestVector;
     }
