@@ -6,7 +6,6 @@ import io.jenetics.util.Factory;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.function.ToDoubleFunction;
 
@@ -19,7 +18,7 @@ public class GenetischerAlgorithmus {
     public double min;
     public double max;
     public int dimension;
-    private ToDoubleFunction<ArrayList<Double>> fitnessFunction;
+    private final ToDoubleFunction<ArrayList<Double>> fitnessFunction;
 
     public GenetischerAlgorithmus(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
                                   double min, double max, int dimension, int seed) {
@@ -70,37 +69,37 @@ public class GenetischerAlgorithmus {
 
             writer.write("Total Generations, Worst Fitness, Best Fitness, Median Fitness, Mean Fitness\n");
 
-        // 3.) Evolution starten und Ergebnis sammeln
-        result = engine.stream()
+            // 3.) Evolution starten und Ergebnis sammeln
+            result = engine.stream()
 
-                .limit(bySteadyFitness(20))
-                .limit(maxGenerations)
-                .peek(x -> {
-                    double[] fitnessValues = x.population().stream()
-                            .mapToDouble(Phenotype::fitness)
-                            .toArray();
-                    double mean = Arrays.stream(fitnessValues).average().orElse(0.0);
-                    double[] fitnessValuesSortet = Arrays.stream(fitnessValues).sorted().toArray();
-                    double median;
-                    if (fitnessValuesSortet.length % 2 == 0) {
-                        median = fitnessValuesSortet[fitnessValuesSortet.length / 2];
-                    }else{
-                        median = fitnessValuesSortet[fitnessValuesSortet.length / 2 + 1];
-                        median = median + fitnessValuesSortet[fitnessValuesSortet.length / 2 - 1];
-                        median = median / 2;
+                    .limit(bySteadyFitness(20))
+                    .limit(maxGenerations)
+                    .peek(x -> {
+                        double[] fitnessValues = x.population().stream()
+                                .mapToDouble(Phenotype::fitness)
+                                .toArray();
+                        double mean = Arrays.stream(fitnessValues).average().orElse(0.0);
+                        double[] fitnessValuesSortet = Arrays.stream(fitnessValues).sorted().toArray();
+                        double median;
+                        if (fitnessValuesSortet.length % 2 == 0) {
+                            median = fitnessValuesSortet[fitnessValuesSortet.length / 2];
+                        } else {
+                            median = fitnessValuesSortet[fitnessValuesSortet.length / 2 + 1];
+                            median = median + fitnessValuesSortet[fitnessValuesSortet.length / 2 - 1];
+                            median = median / 2;
                         }
-                    try {
-                        writer.write(x.totalGenerations() + ",");
-                        writer.write(x.worstFitness() + ",");
-                        writer.write(x.bestFitness() + ",");
-                        writer.write(median + ",");
-                        writer.write(mean + "\n");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                        try {
+                            writer.write(x.totalGenerations() + ",");
+                            writer.write(x.worstFitness() + ",");
+                            writer.write(x.bestFitness() + ",");
+                            writer.write(median + ",");
+                            writer.write(mean + "\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
 
-                })
-                .collect(EvolutionResult. toBestGenotype());
+                    })
+                    .collect(EvolutionResult.toBestGenotype());
 
         } catch (IOException e) {
             throw new RuntimeException("Fehler beim Schreiben der CSV", e);
