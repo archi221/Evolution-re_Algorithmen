@@ -1,18 +1,18 @@
 import java.util.ArrayList;
 
-public class OptimizationFunctions {
+public class Functions {
 
     public double SphereFunktion(ArrayList<Double> vector) {
-        double summe = 0;
+        double sum = 0;
         final double valueRange = 5.12;
         for (double v : vector) {
             assert Math.abs(v) <= valueRange;
-            summe += Math.pow(v, 2);
+            sum += Math.pow(v, 2);
         }
-        return summe;
+        return sum;
     }
 
-    public double AcleyFunktion(ArrayList<Double> vector) {
+    public double AckleyFunktion(ArrayList<Double> vector) {
         double firstSum = 0;
         double secondSum = 0;
         for (double v : vector) {

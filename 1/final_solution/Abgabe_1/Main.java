@@ -2,26 +2,27 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-        OptimazitaionFunktions functions = new OptimazitaionFunktions();
-        HillClimbingAlgo algo = new HillClimbingAlgo(functions::SphereFunktion, -5.12, 5.12,
-                10);
+        Functions functions = new Functions();
+        HillClimbingAlgorithm algorithm = new HillClimbingAlgorithm(functions::SphereFunktion, -5.12, 5.12,
+                2);
 
-        ArrayList<Double> optimalVector = algo.Optimize(1000, 0.3);
-        System.out.println("Sphere Funktion: ");
-        for (double v : optimalVector) {
+        ArrayList<Double> optimalVectorSphere = algorithm.optimize(1000, 0.3);
+        System.out.println("Sphere-Function: ");
+        for (double v : optimalVectorSphere) {
             System.out.print(v + ", ");
         }
         System.out.println("\n");
-        algo.fitnessFunction = functions::AcleyFunktion;
-        algo.dimension = 2;
-        ArrayList<Double> optimalVector2 = algo.Optimize(1000, 0.3);
-        System.out.println("Acley Funktion: ");
-        for (double v : optimalVector2) {
+
+        algorithm.fitnessFunction = functions::AckleyFunktion;
+        algorithm.dimensions = 2;
+        ArrayList<Double> optimalVectorAckley = algorithm.optimize(1000, 0.3);
+        System.out.println("Ackley-Function: ");
+        for (double v : optimalVectorAckley) {
             System.out.print(v + ", \n");
         }
+
         GenetischerAlgorithmus sphere = new GenetischerAlgorithmus(functions::SphereFunktion, -5.12, 5.12, 10);
-        GenetischerAlgorithmus acley = new GenetischerAlgorithmus(functions::AcleyFunktion, -5.12, 5.12, 2);
+        GenetischerAlgorithmus acley = new GenetischerAlgorithmus(functions::AckleyFunktion, -5.12, 5.12, 2);
         System.out.print("Sphere Funktion: \n");
         System.out.print(sphere.optimize("Sphere_Funktion.csv", 100, 0.25, 1000));
         System.out.print("Acley Funktion: \n");
