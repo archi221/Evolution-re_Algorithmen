@@ -6,12 +6,14 @@ import io.jenetics.util.Factory;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.function.ToDoubleFunction;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
-public class GenetischerAlgorithmus {
+public class JeneticsExercise {
 
     private final Random random = new Random();
 
@@ -20,24 +22,14 @@ public class GenetischerAlgorithmus {
     public int dimension;
     private final ToDoubleFunction<ArrayList<Double>> fitnessFunction;
 
-    public GenetischerAlgorithmus(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
-                                  double min, double max, int dimension, int seed) {
-        random.setSeed(seed);
-        this.fitnessFunction = fitnessFunction;
-        this.dimension = dimension;
-        this.min = min;
-        this.max = max;
-        assert max > min;
-    }
-
-    public GenetischerAlgorithmus(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
-                                  double min, double max, int dimension) {
+    public JeneticsExercise(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
+                            double minValue, double maxValue, int dimensions) {
         random.setSeed(67);
         this.fitnessFunction = fitnessFunction;
-        this.dimension = dimension;
-        this.min = min;
-        this.max = max;
-        assert max > min;
+        this.min = minValue;
+        this.max = maxValue;
+        assert maxValue > minValue;
+        this.dimension = dimensions;
     }
 
     // Definition der Fitnessfunktion

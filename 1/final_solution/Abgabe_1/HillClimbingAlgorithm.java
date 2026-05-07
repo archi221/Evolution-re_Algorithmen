@@ -26,7 +26,7 @@ public class HillClimbingAlgorithm {
         double step;
         ArrayList<Double> currentBestVector = new ArrayList<>();
         for (int j = 0; j < dimensions; j++) {
-            currentBestVector.add(random.nextDouble(minValue, Math.nextUp(maxValue)));// min & max inclusive
+            currentBestVector.add(random.nextDouble(minValue, Math.nextUp(maxValue))); // min & max inclusive
         }
 
         for (int i = 0; i < maxIterations; i++) {

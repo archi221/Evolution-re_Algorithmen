@@ -21,11 +21,11 @@ public class Main {
             System.out.print(v + ", \n");
         }
 
-        GenetischerAlgorithmus sphere = new GenetischerAlgorithmus(functions::SphereFunktion, -5.12, 5.12, 10);
-        GenetischerAlgorithmus acley = new GenetischerAlgorithmus(functions::AckleyFunktion, -5.12, 5.12, 2);
+        JeneticsExercise sphere = new JeneticsExercise(functions::SphereFunktion, -5.12, 5.12, 10);
+        JeneticsExercise ackley = new JeneticsExercise(functions::AckleyFunktion, -5.12, 5.12, 2);
         System.out.print("Sphere Funktion: \n");
         System.out.print(sphere.optimize("Sphere_Funktion.csv", 100, 0.25, 1000));
         System.out.print("Acley Funktion: \n");
-        System.out.print(acley.optimize("Acley_Funktion.csv", 40, 0.25, 1000));
+        System.out.print(ackley.optimize("Ackley_Funktion.csv", 40, 0.25, 1000));
     }
 }
