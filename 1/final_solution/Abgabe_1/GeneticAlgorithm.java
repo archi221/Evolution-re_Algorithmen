@@ -13,7 +13,7 @@ import java.util.function.ToDoubleFunction;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
-public class JeneticsExercise {
+public class GeneticAlgorithm {
 
     private final Random random = new Random();
 
@@ -22,7 +22,7 @@ public class JeneticsExercise {
     public int dimension;
     private final ToDoubleFunction<ArrayList<Double>> fitnessFunction;
 
-    public JeneticsExercise(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
+    public GeneticAlgorithm(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
                             double minValue, double maxValue, int dimensions) {
         random.setSeed(67);
         this.fitnessFunction = fitnessFunction;

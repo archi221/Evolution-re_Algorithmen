@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Functions functions = new Functions();
-        HillClimbingAlgorithm algorithm = new HillClimbingAlgorithm(functions::SphereFunktion, -5.12, 5.12,
-                2);
+        OptimizationFunctions optimizationFunctions = new OptimizationFunctions();
+        HillClimbingAlgorithm algorithm = new HillClimbingAlgorithm(optimizationFunctions::SphereFunktion
+                , -5.12, 5.12,2);
 
         ArrayList<Double> optimalVectorSphere = algorithm.optimize(1000, 0.3);
         System.out.println("Sphere-Function: ");
@@ -13,7 +13,7 @@ public class Main {
         }
         System.out.println("\n");
 
-        algorithm.fitnessFunction = functions::AckleyFunktion;
+        algorithm.fitnessFunction = optimizationFunctions::AckleyFunktion;
         algorithm.dimensions = 2;
         ArrayList<Double> optimalVectorAckley = algorithm.optimize(1000, 0.3);
         System.out.println("Ackley-Function: ");
@@ -21,11 +21,15 @@ public class Main {
             System.out.print(v + ", \n");
         }
 
-        JeneticsExercise sphere = new JeneticsExercise(functions::SphereFunktion, -5.12, 5.12, 10);
-        JeneticsExercise ackley = new JeneticsExercise(functions::AckleyFunktion, -5.12, 5.12, 2);
+        GeneticAlgorithm sphere = new GeneticAlgorithm(optimizationFunctions::SphereFunktion, -5.12
+                ,5.12, 10);
+        GeneticAlgorithm ackley = new GeneticAlgorithm(optimizationFunctions::AckleyFunktion, -5.12
+                ,5.12, 2);
         System.out.print("Sphere Funktion: \n");
-        System.out.print(sphere.optimize("Sphere_Funktion.csv", 100, 0.25, 1000));
+        System.out.print(sphere.optimize("Sphere_Funktion.csv", 100, 0.25
+                , 1000));
         System.out.print("Acley Funktion: \n");
-        System.out.print(ackley.optimize("Ackley_Funktion.csv", 40, 0.25, 1000));
+        System.out.print(ackley.optimize("Ackley_Funktion.csv", 40, 0.25
+                , 1000));
     }
 }

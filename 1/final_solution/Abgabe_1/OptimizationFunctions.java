@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Functions {
+public class OptimizationFunctions {
 
     public double SphereFunktion(ArrayList<Double> vector) {
         double sum = 0;
