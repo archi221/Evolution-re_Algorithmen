@@ -13,7 +13,16 @@ public class HillClimbingAlgorithm {
 
     public HillClimbingAlgorithm(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
                                  double minValue, double maxValue, int dimensions) {
-        //random.setSeed(420);
+        this.fitnessFunction = fitnessFunction;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        assert maxValue > minValue;
+        this.dimensions = dimensions;
+    }
+
+    public HillClimbingAlgorithm(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
+                                 double minValue, double maxValue, int dimensions, int seed) {
+        random.setSeed(seed);
         this.fitnessFunction = fitnessFunction;
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -56,4 +65,27 @@ public class HillClimbingAlgorithm {
         }
         return currentBestVector;
     }
+//    public static double[] genereateNextList( int funktion, double[] xList, double step, double min, double max){
+//
+//        double[][] neighbors = new double[4][2];
+//
+//        neighbors[0] = new double[]{Math.min(max, Funktions.round2(xList[0]+step)), xList[1]};
+//        neighbors[1] = new double[]{Math.max(min,  Funktions.round2(xList[0]-step)), xList[1]};
+//        neighbors[2] = new double[]{xList[0], Math.min(max, Funktions.round2(xList[1]+step))};
+//        neighbors[3] = new double[]{xList[0], Math.max(min,  Funktions.round2(xList[1]-step))};
+//
+//        double bestSum= Funktions.calculateFunktion(funktion,neighbors[0]);
+//        int bestI=0;
+//
+//        for(int i =1; i < neighbors.length; i++){
+//            double sum = Funktions.calculateFunktion(funktion,neighbors[i]);
+//
+//            if(sum < bestSum){
+//                bestSum = sum;
+//                bestI =i;
+//            }
+//        }
+//
+//        return neighbors[bestI];
+//    }
 }

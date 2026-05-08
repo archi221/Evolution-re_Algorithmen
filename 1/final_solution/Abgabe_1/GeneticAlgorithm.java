@@ -8,15 +8,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.function.ToDoubleFunction;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
 public class GeneticAlgorithm {
-
-    private final Random random = new Random();
-
     public double min;
     public double max;
     public int dimension;
@@ -24,7 +20,6 @@ public class GeneticAlgorithm {
 
     public GeneticAlgorithm(ToDoubleFunction<ArrayList<Double>> fitnessFunction,
                             double minValue, double maxValue, int dimensions) {
-        random.setSeed(67);
         this.fitnessFunction = fitnessFunction;
         this.min = minValue;
         this.max = maxValue;
