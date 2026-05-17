@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         OptimizationFunctions optimizationFunctions = new OptimizationFunctions();
         HillClimbingAlgorithm algorithm = new HillClimbingAlgorithm(optimizationFunctions::SphereFunktion
-                , -5.12, 5.12,2);
+                , -5.12, 5.12,10);
 
         ArrayList<Double> optimalVectorSphere = algorithm.optimize(1000, 0.3);
         System.out.println("Sphere-Function: ");
@@ -28,8 +28,9 @@ public class Main {
         System.out.print("Sphere Funktion: \n");
         System.out.print(sphere.optimize("Sphere_Funktion.csv", 100, 0.25
                 , 1000));
+        System.out.print("\n");
         System.out.print("Acley Funktion: \n");
-        System.out.print(ackley.optimize("Ackley_Funktion.csv", 40, 0.25
+        System.out.print(ackley.optimize("Ackley_Funktion.csv", 20, 0.25
                 , 1000));
     }
 }
