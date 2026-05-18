@@ -65,6 +65,7 @@ public class HillClimbingAlgorithm {
         }
         return currentBestVector;
     }
+
 //    public static double[] genereateNextList( int funktion, double[] xList, double step, double min, double max){
 //
 //        double[][] neighbors = new double[4][2];
