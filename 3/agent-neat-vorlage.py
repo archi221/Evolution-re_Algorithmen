@@ -245,6 +245,29 @@ def eval_genomes(genomes, config):
 
         genome.fitness = genome_fitness / iterations
 
+# Creates agents with the given net and tests it on the given map
+def eval_genomes_no_iter(genomes, config):
+    """
+        Testet jedes Genom mit einem Agenten.
+    """
+    for genome_id, genome in genomes:
+        genome_fitness = 0.0
+
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+
+        generator = MapGenerator(MAP_SIZE, (0, 0), (MAP_SIZE-1, MAP_SIZE-1))
+        generator.generate()
+
+        agent = Agent(net)
+        agent.set_map(generator.map)
+        agent.set_start(MAP_SIZE-1, MAP_SIZE-1)
+        agent.set_goal(0, 0)
+        agent.run()
+
+        genome.fitness = agent.fitness
+
+
+
 # Erzeugen einer Zufallskarte der Größe 20x20
 generator = MapGenerator(MAP_SIZE, (0, 0), (MAP_SIZE-1, MAP_SIZE-1))
 generator.generate()
@@ -266,20 +289,20 @@ stats = neat.StatisticsReporter()
 p.add_reporter(stats)
 
 # Run until a solution is found.
-winner = p.run(eval_genomes, 10) # up to X generations
+winner = p.run(eval_genomes_no_iter, 100) # up to X generations
 
 #visualize.draw_net(config, winner, True)
 #visualize.draw_net(config, winner, True, prune_unused=True)
-#visualize.plot_stats(stats, ylog=False, view=True)
+#visualize.plot_stats(stats, ylog=False, view=True)s
 #visualize.plot_species(stats, view=True)
+for i in range(5):
+    test_generator = MapGenerator(MAP_SIZE, (0, 0), (MAP_SIZE-1, MAP_SIZE-1))
+    test_generator.generate()
 
-test_generator = MapGenerator(MAP_SIZE, (0, 0), (MAP_SIZE-1, MAP_SIZE-1))
-test_generator.generate()
+    net = neat.nn.FeedForwardNetwork.create(winner, config)
+    agent = Agent(net)
+    agent.set_map(test_generator.map)
+    agent.set_goal(0, 0)
+    agent.set_start(MAP_SIZE-1, MAP_SIZE-1)
 
-net = neat.nn.FeedForwardNetwork.create(winner, config)
-agent = Agent(net)
-agent.set_map(test_generator.map)
-agent.set_goal(0, 0)
-agent.set_start(MAP_SIZE-1, MAP_SIZE-1)
-
-test_generator.draw_map(agent)
+    test_generator.draw_map(agent)
