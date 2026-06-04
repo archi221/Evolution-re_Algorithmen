@@ -141,9 +141,9 @@ class Agent:
     def set_fitness(self, false_move, same_direction):
         self.fitness = 0.0
         punishment_fals_move= false_move / (MAX_STEPS * 2)
-        punishment_same_direction = same_direction / (MAX_STEPS * 4)
+        punishment_same_direction = same_direction / (MAX_STEPS * 2)
 
-        distance = self._get_distance() * (1 + (punishment_same_direction + punishment_fals_move))
+        distance = self._get_distance() * (punishment_same_direction + punishment_fals_move)
         self.fitness = 1.0 / (1.0 + distance)
 
     def activate_net(self, inputs):
@@ -266,7 +266,7 @@ stats = neat.StatisticsReporter()
 p.add_reporter(stats)
 
 # Run until a solution is found.
-winner = p.run(eval_genomes, 50) # up to X generations
+winner = p.run(eval_genomes, 10) # up to X generations
 
 #visualize.draw_net(config, winner, True)
 #visualize.draw_net(config, winner, True, prune_unused=True)
