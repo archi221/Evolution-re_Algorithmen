@@ -5,9 +5,9 @@ import math
 import visualize
 
 # Kantenlänge des Labyrinths
-MAP_SIZE = 25
+MAP_SIZE = 15
 
-MAX_STEPS = 100
+MAX_STEPS = MAP_SIZE * 5
 
 class MapGenerator:
     """
@@ -97,7 +97,7 @@ class MapGenerator:
         for i in range(0,MAP_SIZE*5):
             inputs = agent._get_map_env()
             output = agent.activate_net(inputs)
-            print(output)
+            print(output, sep=" ")
             if agent.move(output):
                 canvas.create_oval(
                     agent.pos_x*ts+ts*0.25, 
@@ -108,7 +108,7 @@ class MapGenerator:
                 
             if agent.pos_x == 0 and agent.pos_y == 0:
                     break
-
+        print("\n")
         root.mainloop()
 
 class Agent:
@@ -139,12 +139,19 @@ class Agent:
         self.goal_y = y
     
     def set_fitness(self, false_move, same_direction):
-        self.fitness = 0.0
-        punishment_fals_move= false_move / (MAX_STEPS * 2)
-        punishment_same_direction = same_direction / (MAX_STEPS * 2)
-
-        distance = self._get_distance() * (punishment_same_direction + punishment_fals_move)
-        self.fitness = 1.0 / (1.0 + distance)
+        if self._get_distance() == 0:
+            self.fitness = 1.0
+            return
+        #print(f"false move: {false_move} same direction: {same_direction} visitet: {len(self.visited)}")
+        punishment_fals_move = 1 - false_move / MAX_STEPS
+        punishment_same_direction = 1 - same_direction / MAX_STEPS
+        #print(len(self.visited))
+        punischment_visitet = (len(self.visited) / MAX_STEPS)
+        pnishment_distance = 1 - self._get_distance() / 36
+        #distance_punished = (0.4 * punishment_fals_move) + (0.2 * punishment_same_direction) + (0.4 * punischment_visitet)
+        #print(f"false move: {punishment_fals_move} samde dierection: {punishment_same_direction} visitet: {punischment_visitet} distance punished: {pnishment_distance}")
+        #1.0 / (1.0 + distance_punished)
+        self.fitness = ( (punischment_visitet * 4) + punishment_fals_move * 2 + punishment_same_direction * 2) / 2
 
     def activate_net(self, inputs):
         output = self.net.activate(inputs)
@@ -185,6 +192,8 @@ class Agent:
         def get_value(x, y):
             if x < 0 or y < 0 or x >= len(self.map) or y >= len(self.map[0]):
                 return 1 # value for out-of-bounds indices
+            elif (x ,y) in self.visited:
+                return 1
             elif self.map[x][y] == 'E' or self.map[x][y] == 'S':
                 return 0
             else:
@@ -220,11 +229,11 @@ class Agent:
 
 
 # Creates agents with the given net and tests it on the given map
-def eval_genomes(genomes, config):
+def eval_genomes_iter(genomes, config):
     """
         Testet jedes Genom mit einem Agenten.
     """
-    iterations = 5
+    iterations = 15
 
     for genome_id, genome in genomes:
         genome_fitness = 0.0
@@ -251,7 +260,6 @@ def eval_genomes_no_iter(genomes, config):
         Testet jedes Genom mit einem Agenten.
     """
     for genome_id, genome in genomes:
-        genome_fitness = 0.0
 
         net = neat.nn.FeedForwardNetwork.create(genome, config)
 
@@ -289,13 +297,13 @@ stats = neat.StatisticsReporter()
 p.add_reporter(stats)
 
 # Run until a solution is found.
-winner = p.run(eval_genomes_no_iter, 100) # up to X generations
+winner = p.run(eval_genomes_no_iter, 50) # up to X generations
 
 #visualize.draw_net(config, winner, True)
 #visualize.draw_net(config, winner, True, prune_unused=True)
 #visualize.plot_stats(stats, ylog=False, view=True)s
 #visualize.plot_species(stats, view=True)
-for i in range(5):
+for i in range(10):
     test_generator = MapGenerator(MAP_SIZE, (0, 0), (MAP_SIZE-1, MAP_SIZE-1))
     test_generator.generate()
 
